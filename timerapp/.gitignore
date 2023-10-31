@@ -1,0 +1,17 @@
+# Miscellaneous
+*.log
+*.swp
+.buildlog/
+.history
+.vscode/
+coverage/
+
+# Flutter/Dart/Pub related
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+pubspec.lock
