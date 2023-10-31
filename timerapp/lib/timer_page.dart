@@ -54,8 +54,8 @@ class TimerPage extends StatelessWidget {
             ),
             const SizedBox(height: 48),
             ElevatedButton(
-              onPressed: () {},
-              child: const Text('Start'),
+              onPressed: model.isRunning ? model.cancel : model.start,
+              child: Text(model.isRunning ? 'Cancel' : 'Start'),
             ),
           ],
         ),
