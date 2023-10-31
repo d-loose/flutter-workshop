@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:timerapp/timer_model.dart';
 import 'package:timerapp/timer_page.dart';
 import 'package:yaru/yaru.dart';
+import 'package:yaru_icons/yaru_icons.dart';
 
 class MockTimerModel extends Mock implements TimerModel {}
 
@@ -54,7 +55,46 @@ void main() {
       ),
     );
 
-    throw UnimplementedError();
+    for (final testCase in [
+      (
+        widgetKey: TimerPage.hoursColumnKey,
+        icon: YaruIcons.plus,
+        callback: () => mockTimerModel.addTime(const Duration(hours: 1))
+      ),
+      (
+        widgetKey: TimerPage.hoursColumnKey,
+        icon: YaruIcons.minus,
+        callback: () => mockTimerModel.addTime(const Duration(hours: -1))
+      ),
+      (
+        widgetKey: TimerPage.minutesColumnKey,
+        icon: YaruIcons.plus,
+        callback: () => mockTimerModel.addTime(const Duration(minutes: 1))
+      ),
+      (
+        widgetKey: TimerPage.minutesColumnKey,
+        icon: YaruIcons.minus,
+        callback: () => mockTimerModel.addTime(const Duration(minutes: -1))
+      ),
+      (
+        widgetKey: TimerPage.secondsColumnKey,
+        icon: YaruIcons.plus,
+        callback: () => mockTimerModel.addTime(const Duration(seconds: 1))
+      ),
+      (
+        widgetKey: TimerPage.secondsColumnKey,
+        icon: YaruIcons.minus,
+        callback: () => mockTimerModel.addTime(const Duration(seconds: -1))
+      ),
+    ]) {
+      await tester.tap(
+        find.descendant(
+          of: find.byKey(testCase.widgetKey),
+          matching: find.byIcon(testCase.icon),
+        ),
+      );
+      verify(testCase.callback).called(1);
+    }
   });
 }
 
