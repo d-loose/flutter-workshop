@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yaru_widgets/widgets.dart';
 
 class TimerPage extends StatelessWidget {
   @visibleForTesting
@@ -15,7 +16,7 @@ class TimerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Timer App')),
+      appBar: const YaruWindowTitleBar(title: Text('Timer App')),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
