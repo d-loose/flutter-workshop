@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yaru/yaru.dart';
 
 import 'timer_page.dart';
 
@@ -7,9 +8,13 @@ class TimerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: TimerPage.create(context),
-      debugShowCheckedModeBanner: false,
+    return YaruTheme(
+      builder: (context, yaru, child) => MaterialApp(
+        theme: yaru.theme,
+        darkTheme: yaru.darkTheme,
+        home: TimerPage.create(context),
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }
