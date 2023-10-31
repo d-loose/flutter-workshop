@@ -12,6 +12,7 @@ dependencies:
   intl: ^0.18.1
   provider: ^6.0.5
   yaru: ^1.1.0
+  yaru_icons: ^2.2.2
   yaru_widgets: ^3.2.2
 
 dev_dependencies:

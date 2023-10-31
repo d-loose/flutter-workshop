@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:timerapp/timer_model.dart';
+import 'package:yaru_icons/yaru_icons.dart';
 import 'package:yaru_widgets/widgets.dart';
 
 class TimerPage extends StatelessWidget {
@@ -35,16 +36,19 @@ class TimerPage extends StatelessWidget {
                 _TimerColumn(
                   key: hoursColumnKey,
                   value: model.remaining.inHours,
+                  interval: const Duration(hours: 1),
                 ),
                 const Text(':'),
                 _TimerColumn(
                   key: minutesColumnKey,
                   value: model.remaining.inMinutes % 60,
+                  interval: const Duration(minutes: 1),
                 ),
                 const Text(':'),
                 _TimerColumn(
                   key: secondsColumnKey,
                   value: model.remaining.inSeconds % 60,
+                  interval: const Duration(seconds: 1),
                 ),
               ],
             ),
@@ -61,16 +65,26 @@ class TimerPage extends StatelessWidget {
 }
 
 class _TimerColumn extends StatelessWidget {
-  const _TimerColumn({super.key, required this.value});
+  const _TimerColumn({super.key, required this.value, required this.interval});
 
   final int value;
+  final Duration interval;
 
   @override
   Widget build(BuildContext context) {
+    final model = context.read<TimerModel>();
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        IconButton(
+          onPressed: () => model.addTime(interval),
+          icon: const Icon(YaruIcons.plus),
+        ),
         Text(NumberFormat("00").format(value)),
+        IconButton(
+          onPressed: () => model.addTime(-interval),
+          icon: const Icon(YaruIcons.minus),
+        ),
       ],
     );
   }
