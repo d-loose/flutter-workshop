@@ -8,7 +8,7 @@ class TimerModel with ChangeNotifier {
   Duration remaining = Duration.zero;
 
   Timer? _timer;
-  final isRunning = false;
+  bool get isRunning => _timer?.isActive ?? false;
 
   void addTime(Duration duration) {
     remaining += duration;
