@@ -1,3 +1,4 @@
+import 'package:desktop_notifications/desktop_notifications.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -9,16 +10,27 @@ abstract class Callback {
 
 class MockCallback extends Mock implements Callback {}
 
+class MockNotificationsClient extends Mock implements NotificationsClient {}
+
+class MockNotification extends Mock implements Notification {}
+
+MockNotificationsClient createMockNotificationsClient() {
+  final client = MockNotificationsClient();
+
+  when(() => client.notify(any())).thenAnswer((_) async => MockNotification());
+  return client;
+}
+
 void main() {
   test('init', () {
-    final model = TimerModel();
+    final model = TimerModel(createMockNotificationsClient());
 
     expect(model.isRunning, isFalse);
     expect(model.remaining, equals(Duration.zero));
   });
 
   test('add and remove time', () {
-    final model = TimerModel();
+    final model = TimerModel(createMockNotificationsClient());
     final mockCallback = MockCallback();
     model.addListener(mockCallback);
 
@@ -34,7 +46,8 @@ void main() {
   });
 
   test('start and finish', () {
-    final model = TimerModel();
+    final mockNotificationsClient = createMockNotificationsClient();
+    final model = TimerModel(mockNotificationsClient);
     final mockCallback = MockCallback();
     model.addListener(mockCallback);
     const startTime = Duration(minutes: 10);
@@ -54,8 +67,11 @@ void main() {
       expect(model.remaining, equals(Duration.zero));
       expect(model.isRunning, isFalse);
 
+      verify(() => mockNotificationsClient.notify('Timer is done!')).called(1);
+
       async.elapse(startTime);
       verifyNever(mockCallback);
+      verifyNever(() => mockNotificationsClient.notify(any()));
     });
   });
 }
