@@ -1,8 +1,12 @@
 import 'dart:async';
 
+import 'package:desktop_notifications/desktop_notifications.dart';
 import 'package:flutter/material.dart';
 
 class TimerModel with ChangeNotifier {
+  TimerModel(this.notificationsClient);
+
+  final NotificationsClient notificationsClient;
   static const interval = Duration(seconds: 1);
 
   Duration remaining = Duration.zero;
@@ -32,7 +36,12 @@ class TimerModel with ChangeNotifier {
     remaining -= interval;
     if (remaining <= Duration.zero) {
       _timer?.cancel();
+      _notify();
     }
     notifyListeners();
+  }
+
+  Future<void> _notify() async {
+    await notificationsClient.notify('Timer is done!');
   }
 }

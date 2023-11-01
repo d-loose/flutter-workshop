@@ -1,7 +1,9 @@
+import 'package:desktop_notifications/desktop_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:timerapp/timer_model.dart';
+import 'package:ubuntu_service/ubuntu_service.dart';
 import 'package:yaru_icons/yaru_icons.dart';
 import 'package:yaru_widgets/widgets.dart';
 
@@ -11,7 +13,7 @@ class TimerPage extends StatelessWidget {
 
   static Widget create(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => TimerModel(),
+      create: (_) => TimerModel(getService<NotificationsClient>()),
       builder: (_, __) => const TimerPage(),
     );
   }
