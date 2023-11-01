@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:desktop_notifications/desktop_notifications.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,10 +16,16 @@ class MockNotificationsClient extends Mock implements NotificationsClient {}
 
 class MockNotification extends Mock implements Notification {}
 
-MockNotificationsClient createMockNotificationsClient() {
-  final client = MockNotificationsClient();
+MockNotificationsClient createMockNotificationsClient({
+  Future<NotificationClosedReason>? closeReason,
+}) {
+  final notification = MockNotification();
+  when(() => notification.closeReason).thenAnswer(
+      (_) async => await closeReason ?? NotificationClosedReason.unknown);
 
-  when(() => client.notify(any())).thenAnswer((_) async => MockNotification());
+  final client = MockNotificationsClient();
+  when(() => client.notify(any())).thenAnswer((_) async => notification);
+
   return client;
 }
 
@@ -72,6 +80,30 @@ void main() {
       async.elapse(startTime);
       verifyNever(mockCallback);
       verifyNever(() => mockNotificationsClient.notify(any()));
+    });
+  });
+
+  test('notification state', () {
+    final notificationCompleter = Completer<NotificationClosedReason>();
+    final mockNotifactionsClient = createMockNotificationsClient(
+        closeReason: notificationCompleter.future);
+    final model = TimerModel(mockNotifactionsClient);
+    final mockCallback = MockCallback();
+    model.addListener(mockCallback);
+    const startTime = Duration(minutes: 10);
+
+    fakeAsync((async) async {
+      model.addTime(startTime);
+      model.start();
+      async.elapse(startTime);
+
+      verify(mockCallback).called(greaterThanOrEqualTo(600));
+      expect(model.hasNotification, isTrue);
+
+      notificationCompleter.complete(NotificationClosedReason.closed);
+
+      await expectLater(model.hasNotification, isFalse);
+      verify(mockCallback).called(1);
     });
   });
 }
